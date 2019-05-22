@@ -16,6 +16,8 @@ var connectionConfig = {
     userName: 'svivotAdmin',
     password: 'ass3svivot!',
     server: "svivotassignment3webdev.database.windows.net",
+    connectionTimeout: 300000,
+    requestTimeout: 300000,
     options: { encrypt: true, database: 'svivotAss3db' }
 };
 
@@ -74,11 +76,8 @@ exports.execQuery = function (query) {
                     console.log(ans);
                     connection.release();
                     resolve(ans);
-
                 });
                 connection.execSql(dbReq);
-                //CHECK THAT IF HERE!!!!!
-                connection.close();
             });
         }
         catch (err) {

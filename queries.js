@@ -1,37 +1,37 @@
-function selectAllFromPOI(){
+exports.selectAllFromPOI = function(){
     return `SELECT * FROM dbo.POI`
 } 
 
-function getPopularPOI(amountOfPOI, threshold){
+exports.getPopularPOI = function(amountOfPOI, threshold){
     const takeTop = amountOfPOI ? `TOP ${amountOfPOI}` : '';
-    return `SELECT ${takeTop} poiName FROM dbo.POI
+    return `SELECT ${takeTop} name FROM dbo.POI
             WHERE rank >= ${threshold}
             ORDER BY rank DESC`
 }
 
-function getMostPopularByCategory(category){
+exports.getMostPopularByCategory = function(category){
     return `SELECT * FROM dbo.POI
-            WHERE rank = (SELECT MAX(rank) 
+            WHERE category = '${category}' AND rank = (SELECT MAX(rank)
                           FROM dbo.POI
                           WHERE category = '${category}')`;
 }
 
-function getFavoritePOI(username){
+exports.getFavoritePOI = function(username){
     return `SELECT name, category, img, reviews, rank, details, date FROM dbo.POI
             LEFT JOIN dbo.UesrsFavoritePOI ON username = '${username}' AND name = poiName
             ORDER BY date DESC`;
 }
 
-function getAllPOINames(){
+exports.getAllPOINames = function(){
     return `SELECT name FROM dbo.POI`
 }
 
-function deleteFavorites(username){
+exports.deleteFavorites = function(username){
     return `DELETE FROM dbo.UsersFavoritePOI
             WHERE username = '${username}`;
 }
 
-function updateFavoritePOI(username, favorites){
+exports.updateFavoritePOI = function(username, favorites){
     var rows = '';
     for (const favorite in favorites) {
         row += `(${username}, ${favorite.poiName}, ${favorite.date}), `
@@ -42,24 +42,24 @@ function updateFavoritePOI(username, favorites){
             VALUES ${rows}`;
 }
 
-function tryLogin(username, psw){
+exports.tryLogin = function(username, psw){
     return `SELECT firstName, lastName FROM dbo.Users
             WHERE username = '${username}' AND psw = '${psw}'`;
 }
 
-function getUsersCategories(username){
+exports.getUsersCategories = function(username){
     return `SELECT category FROM dbo.UsersCategories
             WHERE username = '${username}'`;
 }
 
-function signup(body){
+exports.signup = function(body){
     return ` INSERT dbo.Users
     VALUES (${body.username},${body.psw},${body.qa},
             ${body.city},${body.country},${body.email},
             ${body.firstName},${body.lastName},${body.username})`
 }
 
-function addCategories(categories, username){
+exports.addCategories = function(categories, username){
     var rows = '';
     for (const categorie in categories) {
         row += `(${username}, ${categorie}), `
@@ -70,50 +70,50 @@ function addCategories(categories, username){
             VALUES ${rows}`;
 }
 
-function getAllCategories(){
+exports.getAllCategories = function(){
     return 'SELECT categoryName FROM dbo.Categories';
 }
 
-function addReview(poiName, review){
+exports.addReview = function(poiName, review){
     const date = createDate();
     return `INSERT dbo.Reviews
             VALUES (${poiName}, ${review}, ${date})`;
 }
 
-function getRankAndViews(poiName){
+exports.getRankAndViews = function(poiName){
     return `SELECT rank, views FROM dbo.POI
             WHERE name = '${poiName}'`;
 }
 
-function updateRank(poiName, newRank){
+exports.updateRank = function(poiName, newRank){
     return `UPDATE dbo.POI
             SET rank = '${newRank}'
             WHERE name = '${poiName}'`;
 }
 
-function isValidPOI(poiName){
+exports.isValidPOI = function(poiName){
     return `SELECT name FROM dbo.POI
             WHERE name = '${poiName}'`;
 }
 
-function getViews(poiName){
+exports.getViews = function(poiName){
     return `SELECT views FROM dbo.POI
             WHERE name = '${poiName}'`;
 }
 
-function addView(views, poiName){
+exports.addView = function(views, poiName){
     return `UPDATE dbo.POI
             SET views = '${views}'
             WHERE name = '${poiName}'`;
 }
 
-function getLastReviews(poiName){
+exports.getLastReviews = function(poiName){
     return `SELECT TOP 2 review FROM dbo.Reviews
             WHERE name = '${poiName}'
             ORDER BY date DESC`;
 }
 
-function answersIdentificationQuestion(username, qa){
+exports.answersIdentificationQuestion = function(username, qa){
     return `SELECT qa FROM dbo.Users
             WHERE username = '${username}' AND qa = '${qa}'`;
 }

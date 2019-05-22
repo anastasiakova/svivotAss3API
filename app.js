@@ -3,17 +3,23 @@ var app = express();
 var DButilsAzure = require('./DButils');
 const jwt = require("jsonwebtoken");
 const queries = require('./queries');
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 
 const port = process.env.PORT || 3000; //environment variable
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 
-app.use(require('body-parser').json());
-
 app.get('/getAllPOI', function(req, res){
-    DButilsAzure.execQuery(queries.selectAllFromPOI)
+    query = queries.selectAllFromPOI(); 
+    DButilsAzure.execQuery(query)
     .then(function(result){
+        console.log(result)
         res.send(result);
     })
     .catch(function(err){
@@ -22,7 +28,7 @@ app.get('/getAllPOI', function(req, res){
     });
 });
 
-app.get('/getPopularPOI', function(req, res){
+app.post('/getPopularPOI', function(req, res){
     const threshold = req.body.threshold;
     if (threshold && threshold >= 0){
         const amountOfPOI = req.body.amountOfPOI;
@@ -52,7 +58,7 @@ app.use('/logged', function(req, res, next){
 app.post('/getMostPopularByCategory', function(req, res){
     const category = req.body.category;
     if(category){
-        DButilsAzure.execQuery(queries.getMostPopularByCategory())
+        DButilsAzure.execQuery(queries.getMostPopularByCategory(category))
         .then(function(result){
             res.send(result);
         })
@@ -155,9 +161,9 @@ app.post('/LogIn', function(req, res){
     if(username && psw){
         DButilsAzure.execQuery(queries.tryLogin(username, psw))
         .then(function(result){
-            if(result && result.firstName && result.lastName){
+            if(result && result[0].firstName && result[0].lastName){
                 const token = createToken(username);
-	            res.send({"token": token , "name":`${result.firstName} ${result.lastName}`});
+	            res.send({"token": token , "name":`${result[0].firstName} ${result[0].lastName}`});
             }
             else{
                 res.status(404).send("username with this password are not found");
@@ -307,9 +313,9 @@ app.get('/getLastReviews', function(req, res){
     }
 });
 
-pp.get('/answersIdentificationQuestion', function(req, res){
+app.get('/answersIdentificationQuestion', function(req, res){
     const username = req.body.username;
-    const qa = req.body.qa;
+    const qa = req.body.qa;s
     if(username && qa && qa.question && qa.answer){
         DButilsAzure.execQuery(queries.answersIdentificationQuestion(username, qa))
         .then(function(psw){
@@ -350,7 +356,7 @@ function createToken(username){
     const secret = 'hophopthisissecretnu';
     payload = { username: username };
 	options = { expiresIn: "1d" };
-    const token = jwt.sign(payload, secret, options);
+    return jwt.sign(payload, secret, options);
 }
 
 function calcNewRank(rankAndViews, rank){
