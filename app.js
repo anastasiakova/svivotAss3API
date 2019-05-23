@@ -4,6 +4,9 @@ var DButilsAzure = require('./DButils');
 const jwt = require("jsonwebtoken");
 const queries = require('./queries');
 const bodyParser = require('body-parser');
+const fs           = require('fs');
+const xml2js       = require('xml2js');
+const parser       = new xml2js.Parser();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -196,11 +199,40 @@ app.post('/"signup"', function(req, res, next){
         req.body.city && req.body.country &&
         req.body.email && req.body.firstName && req.body.lastName &&
         req.body.categories && (typeof(req.body.categories) == Array && req.body.length > 0)){
+            //check XML country
         next()
     }
     else {
         res.status(400).send("one of the signup parameters is missing");
     }
+});
+
+
+//Validate given country is a valid country from the XML file
+app.post('/signup', function(req, res, next){
+    var isValidCountry = false;
+    var xmlfile = "./Countries.xml";
+    fs.readFile(xmlfile, "utf-8", function (error, text) {
+        if (error) {
+            throw error;
+        }else {
+            parser.parseString(text, function (err, result) {
+                var countries = result['Countries']['country'];
+                countries.forEach(country => {
+                    if(country.Name == req.body.country){
+                        isValidCountry = true;
+                        break;
+                    }
+                    if(isValidCountry){
+                        next();
+                    }
+                    else{
+                        res.status(400).send("Could not match given country to server's list of countries.");
+                    }
+                });
+            });
+        }
+   });
 });
 
 //verify unique username
