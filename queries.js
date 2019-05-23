@@ -17,8 +17,9 @@ exports.getMostPopularByCategory = function(category){
 }
 
 exports.getFavoritePOI = function(username){
-    return `SELECT name, category, img, reviews, rank, details, date FROM dbo.POI
-            LEFT JOIN dbo.UesrsFavoritePOI ON username = '${username}' AND name = poiName
+    return `SELECT name, category, img, rank, details, date
+            FROM dbo.UsersFavoritePOI
+            LEFT JOIN dbo.POI ON name = poiName AND username = '${username}'
             ORDER BY date DESC`;
 }
 
@@ -28,13 +29,13 @@ exports.getAllPOINames = function(){
 
 exports.deleteFavorites = function(username){
     return `DELETE FROM dbo.UsersFavoritePOI
-            WHERE username = '${username}`;
+            WHERE username = '${username}'`;
 }
 
 exports.updateFavoritePOI = function(username, favorites){
     var rows = '';
     for (const favorite in favorites) {
-        row += `(${username}, ${favorite.poiName}, ${favorite.date}), `
+        rows += `('${username}', '${favorites[favorite].poiName}', '${favorites[favorite].date}'), `
     }
     //remove last ', '
     rows = rows.slice(0, -2);
@@ -53,16 +54,17 @@ exports.getUsersCategories = function(username){
 }
 
 exports.signup = function(body){
+    const qa = JSON.stringify(body.qa);
     return ` INSERT dbo.Users
-    VALUES (${body.username},${body.psw},${body.qa},
-            ${body.city},${body.country},${body.email},
-            ${body.firstName},${body.lastName},${body.username})`
+    VALUES ('${body.username}','${body.psw}','${qa}',
+            '${body.firstName}','${body.lastName}',
+            '${body.city}','${body.country}','${body.email}')`
 }
 
 exports.addCategories = function(categories, username){
     var rows = '';
     for (const categorie in categories) {
-        row += `(${username}, ${categorie}), `
+        row += `('${username}', '${categorie}'), `
     }
     //remove last ', '
     rows = rows.slice(0, -2);
@@ -77,7 +79,7 @@ exports.getAllCategories = function(){
 exports.addReview = function(poiName, review){
     const date = createDate();
     return `INSERT dbo.Reviews
-            VALUES (${poiName}, ${review}, ${date})`;
+            VALUES ('${poiName}', '${review}', '${date}')`;
 }
 
 exports.getRankAndViews = function(poiName){
@@ -87,7 +89,7 @@ exports.getRankAndViews = function(poiName){
 
 exports.updateRank = function(poiName, newRank){
     return `UPDATE dbo.POI
-            SET rank = '${newRank}'
+            SET rank = ${newRank}
             WHERE name = '${poiName}'`;
 }
 
@@ -109,13 +111,14 @@ exports.addView = function(views, poiName){
 
 exports.getLastReviews = function(poiName){
     return `SELECT TOP 2 review FROM dbo.Reviews
-            WHERE name = '${poiName}'
+            WHERE poiName = '${poiName}'
             ORDER BY date DESC`;
 }
 
 exports.answersIdentificationQuestion = function(username, qa){
-    return `SELECT qa FROM dbo.Users
-            WHERE username = '${username}' AND qa = '${qa}'`;
+    const qaAsString = JSON.stringify(qa);
+    return `SELECT psw FROM dbo.Users
+            WHERE username = '${username}' AND qa = '${qaAsString}'`;
 }
 
 exports.isUniqueUsername = function(username){
