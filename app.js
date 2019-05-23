@@ -9,68 +9,66 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
-
+app.use('/logged', function(req, res, next){
+    autontication(req, next);
+});
 const port = process.env.PORT || 3000; //environment variable
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 
-app.get('/getAllPOI', function(req, res){
-    query = queries.selectAllFromPOI(); 
-    DButilsAzure.execQuery(query)
-    .then(function(result){
-        console.log(result)
-        res.send(result);
-    })
-    .catch(function(err){
-        console.log(err);
-        res.send(err);
-    });
-});
+// app.get('/getAllPOI', function(req, res){
+//     query = queries.selectAllFromPOI(); 
+//     DButilsAzure.execQuery(query)
+//     .then(function(result){
+//         console.log(result)
+//         res.send(result);
+//     })
+//     .catch(function(err){
+//         console.log(err);
+//         res.send(err);
+//     });
+// });
 
-app.post('/getPopularPOI', function(req, res){
-    const threshold = req.body.threshold;
-    if (threshold && threshold >= 0){
-        const amountOfPOI = req.body.amountOfPOI;
-        if(amountOfPOI <= 0 || (amountOfPOI && (typeof(amountOfPOI) !== 'number'))) {
-            res.status(400).send("amount should be positive number");
-        }
-        else {
-            DButilsAzure.execQuery(queries.getPopularPOI(amountOfPOI, threshold))
-            .then(function(result){
-                res.send(result)
-            })
-            .catch(function(err){
-                console.log(err);
-                res.send(err);
-            });
-        }
-    }
-    else {
-        res.status(400).send("threshold is required");
-    }
-});
+// app.post('/getPopularPOI', function(req, res){
+//     const threshold = req.body.threshold;
+//     if (threshold && threshold >= 0){
+//         const amountOfPOI = req.body.amountOfPOI;
+//         if(amountOfPOI <= 0 || (amountOfPOI && (typeof(amountOfPOI) !== 'number'))) {
+//             res.status(400).send("amount should be positive number");
+//         }
+//         else {
+//             DButilsAzure.execQuery(queries.getPopularPOI(amountOfPOI, threshold))
+//             .then(function(result){
+//                 res.send(result)
+//             })
+//             .catch(function(err){
+//                 console.log(err);
+//                 res.send(err);
+//             });
+//         }
+//     }
+//     else {
+//         res.status(400).send("threshold is required");
+//     }
+// });
 
-app.use('/logged', function(req, res, next){
-    autontication(req, next);
-});
-
-app.post('/getMostPopularByCategory', function(req, res){
-    const category = req.body.category;
-    if(category){
-        DButilsAzure.execQuery(queries.getMostPopularByCategory(category))
-        .then(function(result){
-            res.send(result);
-        })
-        .catch(function(err){
-            console.log(err);
-            res.status(400).send(err);
-        })
-    }
-    else {
-        res.status(400).send("category is required");
-    }
-});
+// app.post('/getMostPopularByCategory', function(req, res){
+//     const category = req.body.category;
+//     if(category){
+//         DButilsAzure.execQuery(queries.getMostPopularByCategory(category))
+//         .then(function(result){
+//             res.send(result);
+//         })
+//         .catch(function(err){
+//             console.log(err);
+//             res.status(400).send(err);
+//         })
+//     }
+//     else {
+//         res.status(400).send("category is required");
+//     }
+// });
 
 app.post('/logged/getFavoritePOI', function(req, res){
     const username = req.decoded.username;
@@ -122,7 +120,7 @@ app.post('/logged/updateFavoritePOI', function(req, res, next){
     DButilsAzure.execQuery(queries.getAllPOINames())
     .then(function(result){
         for (const name in favoritesPOINames) {
-            if (!result.name.includs(name)) {
+            if (!result.name.includes(name)) {
                 isValid = false;
                 break; 
             }
@@ -155,44 +153,44 @@ app.post('/logged/updateFavoritePOI', function(req, res){
     });
 });
 
-app.post('/LogIn', function(req, res){
-    username = req.body.username;
-    psw = req.body.psw;
-    if(username && psw){
-        DButilsAzure.execQuery(queries.tryLogin(username, psw))
-        .then(function(result){
-            if(result && result[0].firstName && result[0].lastName){
-                const token = createToken(username);
-	            res.send({"token": token , "name":`${result[0].firstName} ${result[0].lastName}`});
-            }
-            else{
-                res.status(404).send("username with this password are not found");
-            }
-        })
-        .catch(function(err){
-            console.log(err);
-            res.send(err);
-        });
-    }
-    else {
-        res.status(400).send("username and password are required");
-    }
-});
+// app.post('/LogIn', function(req, res){
+//     username = req.body.username;
+//     psw = req.body.psw;
+//     if(username && psw){
+//         DButilsAzure.execQuery(queries.tryLogin(username, psw))
+//         .then(function(result){
+//             if(result && result[0].firstName && result[0].lastName){
+//                 const token = createToken(username);
+// 	            res.send({"token": token , "name":`${result[0].firstName} ${result[0].lastName}`});
+//             }
+//             else{
+//                 res.status(404).send("username with this password are not found");
+//             }
+//         })
+//         .catch(function(err){
+//             console.log(err);
+//             res.send(err);
+//         });
+//     }
+//     else {
+//         res.status(400).send("username and password are required");
+//     }
+// });
 
 app.get('/logged/getUsersCategories', function(req, res){
     username = req.decoded.username;
     DButilsAzure.execQuery(queries.getUsersCategories(username))
     .then(function(result){
-        res.send(result)
+        res.send(result);
     })
     .catch(function(err){
-        console.log(err)
-        res.send(err)
+        console.log(err);
+        res.send(err);
     })
 });
 
 //verify params
-app.post('/signup', function(req, res, next){
+app.post('/"signup"', function(req, res, next){
     if(req.body.username && req.body.psw &&
         req.body.qa && req.body.qa.question && req.body.qa.answer &&
         req.body.city && req.body.country &&
@@ -205,6 +203,20 @@ app.post('/signup', function(req, res, next){
     }
 });
 
+//verify unique username
+app.post('/signup', function(req, res, next){
+    DButilsAzure.execQuery(queries.isUniqueUsername(req.body.username))
+    .then(function(result){
+        if(result === []){
+            next();
+        }
+        else{
+            res.status(400).send("username is not unique!");
+        }
+    })
+});
+
+//signup
 app.post('/signup', function(req, res){
     DButilsAzure.execQuery(queries.signup(req.body))
     .then(function(){

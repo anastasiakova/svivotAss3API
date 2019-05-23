@@ -118,6 +118,11 @@ exports.answersIdentificationQuestion = function(username, qa){
             WHERE username = '${username}' AND qa = '${qa}'`;
 }
 
+exports.isUniqueUsername = function(username){
+    return `SELECT username FROM dbo.Users
+            WHERE username = '${username}'`;
+}
+
 //'20120618 10:34:09 AM'
 function createDate(){
     const today = new Date();
