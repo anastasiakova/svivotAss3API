@@ -1,6 +1,3 @@
-//this is only an example, handling everything is yours responsibilty !
-//this is an example - open and close the connection in each request
-
 var ConnectionPool = require('tedious-connection-pool');
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
@@ -26,12 +23,9 @@ var pool = new ConnectionPool(poolConfig, connectionConfig)
 
 pool.on('error', function (err) {
     if (err) {
-        console.log(err);
-       
+        console.log(err); 
     }
 });
-console.log('pool connection on');
-
 
 //----------------------------------------------------------------------------------------------------------------------
 exports.execQuery = function (query) {
@@ -45,14 +39,12 @@ exports.execQuery = function (query) {
             //acquire a connection
             pool.acquire(function (err, connection) {
                 if (err) {
-                    console.log('acquire ' + err);
                     reject(err);
                 }
                 console.log('connection on');
 
                 var dbReq = new Request(query, function (err, rowCount) {
                     if (err) {
-                        console.log('Request ' + err);
                         reject(err);
                     }
                 });
@@ -72,8 +64,6 @@ exports.execQuery = function (query) {
                 });
 
                 dbReq.on('requestCompleted', function () {
-                    console.log('request Completed: ' + dbReq.rowCount + ' row(s) returned');
-                    console.log(ans);
                     connection.release();
                     resolve(ans);
                 });
