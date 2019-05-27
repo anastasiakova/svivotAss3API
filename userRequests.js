@@ -105,7 +105,7 @@ router.post('/LogIn', function(req, res){
     }
 });
 
-app.router('/answersIdentificationQuestion', function(req, res){
+router.post('/answersIdentificationQuestion', function(req, res){
     const username = req.body.username;
     const qa = req.body.qa;
     if(username && qa && qa.length === 2 &&

@@ -4,7 +4,7 @@ exports.selectAllFromPOI = function(){
 
 exports.getPopularPOI = function(amountOfPOI, threshold){
     const takeTop = amountOfPOI ? `TOP ${amountOfPOI}` : '';
-    return `SELECT ${takeTop} name FROM dbo.POI
+    return `SELECT ${takeTop} * FROM dbo.POI
             WHERE rank >= ${threshold}
             ORDER BY rank DESC`
 }
@@ -17,9 +17,9 @@ exports.getMostPopularByCategory = function(category){
 }
 
 exports.getFavoritePOI = function(username){
-    return `SELECT name, category, img, rank, details, date
+    return `SELECT dbo.POI.name, dbo.POI.category, dbo.POI.img, dbo.POI.rank, dbo.POI.details, dbo.UsersFavoritePOI.date
             FROM dbo.UsersFavoritePOI
-            LEFT JOIN dbo.POI ON name = poiName AND username = '${username}'
+            JOIN dbo.POI ON name = poiName AND username = '${username}'
             ORDER BY date DESC`;
 }
 
@@ -148,7 +148,7 @@ function createDate(){
         ampm = 'PM';
     }
     if(HH < 10) {
-        HH ='0'+ dd;
+        HH ='0'+ HH;
     } 
     if(MM < 10) {
         MM ='0'+ MM;
@@ -157,5 +157,5 @@ function createDate(){
         SS ='0'+ SS;
     } 
 
-    return`${yyyy}${mm}${dd} ${HH}:${MM}:${SS} ${ampm}`;
+    return `${yyyy}${mm}${dd} ${HH}:${MM}:${SS} ${ampm}`;
 }
