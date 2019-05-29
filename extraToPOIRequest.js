@@ -46,6 +46,9 @@ router.post('/logged/addReview', function(req, res){
             res.send(err);
         });
     } 
+    else {
+        res.status(200).send();
+    }
 });
 
 

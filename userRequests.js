@@ -13,13 +13,10 @@ router.use(function(req, res, next) {
 
 //verify params
 router.post('/signup', function(req, res, next){
-    if(req.body.username && req.body.psw &&
-        req.body.qa && req.body.qa.length === 2 &&
-        req.body.qa[0].question && req.body.qa[0].answer &&
-        req.body.qa[1].question && req.body.qa[1].answer &&
-        req.body.city && req.body.country &&
-        req.body.email && req.body.firstName && req.body.lastName &&
-        req.body.categories && req.body.categories.length > 0){
+    if(checkUsername(req.body.username) && checkPsw(req.body.psw) &&
+       checkQA(req.body.qa) && checkEmail(req.body.email) &&
+       req.body.city && req.body.country && req.body.firstName &&
+       req.body.lastName && checkCategory(req.body.categories)){
         next();
     }
     else {
@@ -135,6 +132,26 @@ function createToken(username){
     payload = { username: username };
 	options = { expiresIn: "1d" };
     return jwt.sign(payload, secret, options);
+}
+
+function checkUsername(username){
+    return username && username.length >= 3 && username.length <= 8 && /^[a-zA-Z]+$/.test(username);
+}
+
+function checkPsw(psw){
+    return psw && psw.length >= 5 && psw.length <= 10 && /^[a-zA-Z0-9]+$/.test(psw);
+}
+
+function checkQA(qa){
+    return Array.isArray(qa) && qa.length === 2 && qa[0].question && qa[0].answer && qa[1].question && qa[1].answer;
+}
+
+function checkEmail(email){
+    return email && /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email);
+}
+
+function checkCategory(categories){
+    return categories && categories.length > 2;
 }
 
 module.exports = router;
