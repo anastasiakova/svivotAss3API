@@ -151,7 +151,7 @@ function checkEmail(email){
 }
 
 function checkCategory(categories){
-    return categories && categories.length > 2;
+    return categories && categories.length >= 2;
 }
 
 module.exports = router;

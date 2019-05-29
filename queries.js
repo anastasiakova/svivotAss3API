@@ -82,14 +82,14 @@ exports.addReview = function(poiName, review){
             VALUES ('${poiName}', '${review}', '${date}')`;
 }
 
-exports.getRankAndViews = function(poiName){
-    return `SELECT rank, views FROM dbo.POI
+exports.getRankAndRanksAmount = function(poiName){
+    return `SELECT rank, ranksAmount FROM dbo.POI
             WHERE name = '${poiName}'`;
 }
 
 exports.updateRank = function(poiName, newRank){
     return `UPDATE dbo.POI
-            SET rank = ${newRank}
+            SET rank = ${newRank}, ranksAmount = ranksAmount + 1
             WHERE name = '${poiName}'`;
 }
 

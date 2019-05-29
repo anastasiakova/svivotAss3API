@@ -18,9 +18,9 @@ router.post('/logged/addReview', function(req, res, next){
     const rank = req.body.rank;
 
     if(rank && typeof(rank) === 'number'){
-        DButilsAzure.execQuery(queries.getRankAndViews(poiName))
-        .then(function(rankAndViews){
-            const newRank = calcNewRank(rankAndViews[0], rank);
+        DButilsAzure.execQuery(queries.getRankAndRanksAmount(poiName))
+        .then(function(rankAndRanksAmount){
+            const newRank = calcNewRank(rankAndRanksAmount[0], rank);
             DButilsAzure.execQuery(queries.updateRank(poiName, newRank))
             .then(function(){
                 next();
@@ -89,9 +89,9 @@ router.post('/getLastReviews', function(req, res){
 });
 
 function calcNewRank(rankAndViews, rank){
-    oldRank = rankAndViews.rank;
-    views = rankAndViews.views;
-    return (((oldRank * views) + rank) / views);
+    const oldRank = rankAndViews.rank;
+    const ranksAmount = rankAndViews.ranksAmount;
+    return (((oldRank * ranksAmount) + rank) / (ranksAmount + 1));
 }
 
 function isValidPOI(req, res, next){
