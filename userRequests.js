@@ -94,7 +94,7 @@ router.post('/LogIn', function(req, res){
             }
         })
         .catch(function(err){
-            res.send(err);
+            res.status(404).send("username with this password are not found");
         });
     }
     else {
