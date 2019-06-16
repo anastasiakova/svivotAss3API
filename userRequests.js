@@ -8,7 +8,7 @@ const queries = require('./queries');
 const jwt = require("jsonwebtoken");
 
 router.use(function(req, res, next) {
-    next();
+ next();
 });
 
 //verify params

@@ -14,6 +14,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+//chrome exp handle
+app.post('/',function(req,res,next){
+    res.header("Access-Control-Allow-Origin","*");
+    res.header("Access-Control-Allow-Headers","Origin, X-Requested-With,Content-Type, Accept");
+    next();
+})
+
 app.use('/logged', function(req, res, next){
     autontication(req, res ,next);
 });
