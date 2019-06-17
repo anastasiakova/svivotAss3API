@@ -68,9 +68,14 @@ exports.deleteUser = function(body){
 
 exports.addCategories = function(categories, username){
     var rows = '';
-    for (const categorie in categories) {
-        rows += `('${username}', '${categorie}'), `
+    for (var i = 0 ; i < categories.length ; i++){
+        console.log(categories[i]);
+        rows += `('${username}', '${categories[i]}'), `;
     }
+    // for (const categorie in categories.values) {
+    //     console.log(categorie);
+    //     rows += `('${username}', '${categorie}'), `;
+    // }
     //remove last ', '
     rows = rows.slice(0, -2);
     console.log(`INSERT dbo.UsersCategories

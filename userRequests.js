@@ -13,6 +13,7 @@ router.use(function(req, res, next) {
 
 //verify params
 router.post('/signup', function(req, res, next){
+    console.log(req.body);
     if(checkUsername(req.body.username) && checkPsw(req.body.psw) &&
        checkQA(req.body.qa) && checkEmail(req.body.email) &&
        req.body.city && req.body.country && req.body.firstName &&
@@ -20,6 +21,16 @@ router.post('/signup', function(req, res, next){
         next();
     }
     else {
+        if(!checkUsername(req.body.username)) console.log("no username");
+        if(!checkPsw(req.body.psw)) console.log("no pwd");
+        if(!checkQA(req.body.qa)) console.log("no qa");
+        if(!checkEmail(req.body.email)) console.log("no email");
+        if(!req.body.city) console.log("no city");
+        if(!req.body.country) console.log("no country");
+        if(!req.body.firstName) console.log("no firstname");
+        if(!req.body.lastName) console.log("no lastName");
+        if(!checkCategory(req.body.categories)) console.log("no categories");
+
         res.status(400).send("one of the signup parameters is missing");
     }
 });
@@ -68,6 +79,8 @@ router.post('/signup', function(req, res, next){
 router.post('/signup', function(req, res){
     DButilsAzure.execQuery(queries.signup(req.body))
     .then(function(){
+        console.log(req.body.categories);
+        //console.log
         DButilsAzure.execQuery(queries.addCategories(req.body.categories, req.body.username))
     })
     .then(function(){
