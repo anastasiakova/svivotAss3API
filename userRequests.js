@@ -74,7 +74,8 @@ router.post('/signup', function(req, res){
         res.status(200).send();
     })
     .catch(function(err){
-        res.send(err);
+        DButilsAzure.execQuery(queries.deleteUser(req.body));
+        res.status(500).send(`Could not create user: ${err}`);
     });
 });
 

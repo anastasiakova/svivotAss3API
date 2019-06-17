@@ -61,13 +61,20 @@ exports.signup = function(body){
             '${body.city}','${body.country}','${body.email}')`
 }
 
+exports.deleteUser = function(body){
+    return `DELETE FROM dbo.Users
+            WHERE username = '${body.username}'`;
+}
+
 exports.addCategories = function(categories, username){
     var rows = '';
     for (const categorie in categories) {
-        row += `('${username}', '${categorie}'), `
+        rows += `('${username}', '${categorie}'), `
     }
     //remove last ', '
     rows = rows.slice(0, -2);
+    console.log(`INSERT dbo.UsersCategories
+    VALUES ${rows}`);
     return `INSERT dbo.UsersCategories
             VALUES ${rows}`;
 }
