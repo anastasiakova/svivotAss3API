@@ -125,19 +125,19 @@ router.post('/answersIdentificationQuestion', function(req, res){
         DButilsAzure.execQuery(queries.answersIdentificationQuestion(username, qa))
         .then(function(psw){
             if(psw.length > 0){
-                res.send(psw);
+                res.send(psw[0]);
             }
             else {
-                res.status(400).send("password not found, try checking your username or answers");
+                res.status(400).send("Password not found, try checking your username or answers");
             }
            
         })
         .catch(function(err){
-            res.send(err);
+            res.status(500).send(`Could not restore password: ${err}`);
         });
     }
     else {
-        res.status(400).send("username, question and answer are required");
+        res.status(400).send("Username, question and answer are required");
     }
 });
 
