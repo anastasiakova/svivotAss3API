@@ -25,11 +25,11 @@ router.post('/logged/addReview', function(req, res, next){
             .then(function(){
                 next();
             }).catch(function(err){
-                res.send(err);
+                res.status(400).send(`Something went wrong...\n ${err}`);
             });
         })
         .catch(function(err){
-            res.send(err);
+            res.status(400).send("numeric rank is required");
         });
     }
     else {
@@ -43,7 +43,7 @@ router.post('/logged/addReview', function(req, res){
         DButilsAzure.execQuery(queries.addReview(poiName, req.body.review))
         .then(()=> res.status(200).send())
         .catch(function(err){
-            res.send(err);
+            res.status(500).send(`Something went wrong...\n ${err}`);
         });
     } 
     else {
@@ -80,7 +80,7 @@ router.post('/getLastReviews', function(req, res){
             res.send(result)
         })
         .catch(function(err){
-            res.send(err);
+            res.status(400).send("point of view name is required");
         });
     }
     else {
@@ -107,7 +107,7 @@ function isValidPOI(req, res, next){
             }
         })
         .catch(function(err){
-            res.send(err);
+            res.status(500).send(`Something went wrong...\n ${err}`);
         });
     }
     else {

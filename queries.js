@@ -106,6 +106,9 @@ exports.updateRank = function(poiName, newRank){
 }
 
 exports.isValidPOI = function(poiName){
+    console.log('${poiName}');
+    console.log(`SELECT name FROM dbo.POI
+    WHERE name = '${poiName}`);
     return `SELECT name FROM dbo.POI
             WHERE name = '${poiName}'`;
 }
@@ -122,6 +125,10 @@ exports.addView = function(views, poiName){
 }
 
 exports.getLastReviews = function(poiName){
+    console.log('${poiName}');
+    console.log(`SELECT TOP 2 review FROM dbo.Reviews
+    WHERE poiName = '${poiName}'
+    ORDER BY date DESC`);
     return `SELECT TOP 2 review FROM dbo.Reviews
             WHERE poiName = '${poiName}'
             ORDER BY date DESC`;
