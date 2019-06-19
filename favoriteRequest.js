@@ -14,7 +14,7 @@ router.post('/logged/getFavoritePOI', function(req, res){
         res.send(result);
     })
     .catch(function(err){
-        res.send(err);
+        res.status(404).send('data not found');
     });
 });
 
