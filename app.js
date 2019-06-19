@@ -9,11 +9,12 @@ var poiRequests = require('./poiRequests.js');
 var favoriteRequest = require('./favoriteRequest.js');
 var categoriesRequest = require('./categoriesRequest.js');
 var extraToPOIRequest = require('./extraToPOIRequest.js');
+var cors = require('cors');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-
+app.use(cors());
 //chrome exp handle
 app.use(function(req,res,next){
     res.header("Access-Control-Allow-Origin","*");
