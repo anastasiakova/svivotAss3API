@@ -80,11 +80,11 @@ router.post('/logged/updateFavoritePOI', function(req, res){
     const username = req.decoded.username;
     var isValid = true; 
     const dates = favorites.map((favorite) => favorite.date);
-    const userKeyRegExp = /^[1-2][0-9]{3}[0-1][0-9][0-3][0-9]\s[0-1][0-9][:][0-5][0-9][:][0-5][0-9]\s[AP][M]$/
+    const userKeyRegExp = /^[1-2][0-9]{3}-[0-1][0-9]-[0-3][0-9]T[0-1][0-9][:][0-5][0-9][:][0-5][0-9]Z$/
     for (const date in dates) {
         if (!userKeyRegExp.test(dates[date])) {
             isValid = false;
-            res.status(400).send('the date format is yyyymmdd HH:MM:SS AM/PM');
+            res.status(400).send('the date format is yyyy-mm-ddTHH:MM:SSZ');
             break;
         }
     }

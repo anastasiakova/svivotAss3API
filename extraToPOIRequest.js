@@ -80,7 +80,7 @@ router.post('/getLastReviews', function(req, res){
             res.send(result)
         })
         .catch(function(err){
-            res.status(400).send("point of view name is required");
+            res.status(404).send('no data found');
         });
     }
     else {
