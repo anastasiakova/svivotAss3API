@@ -25,7 +25,7 @@ router.post('/logged/updateFavoritePOI', function(req, res, next){
     var isValid = true;
     if(favorites){
         for (let index = 0; index < favorites.length; index++) {
-            if(!favorites[index].poiName || !favorites[index].date){
+            if(!favorites[index].name || !favorites[index].name){
                 isValid = false;
                 break; 
             }
@@ -51,7 +51,7 @@ router.post('/logged/updateFavoritePOI', function(req, res, next){
 
 //check favorite poi names 
 router.post('/logged/updateFavoritePOI', function(req, res, next){
-    const favoritesPOINames = req.body.favorites.map((favorite) => favorite.poiName);
+    const favoritesPOINames = req.body.favorites.map((favorite) => favorite.name);
     var isValid = true;
     DButilsAzure.execQuery(queries.getAllPOINames())
     .then(function(result){

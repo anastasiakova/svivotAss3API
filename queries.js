@@ -35,7 +35,7 @@ exports.deleteFavorites = function(username){
 exports.updateFavoritePOI = function(username, favorites){
     var rows = '';
     for (const favorite in favorites) {
-        rows += `('${username}', '${favorites[favorite].poiName}', '${favorites[favorite].date}'), `
+        rows += `('${username}', '${favorites[favorite].name}', '${favorites[favorite].date}'), `
     }
     //remove last ', '
     rows = rows.slice(0, -2);
