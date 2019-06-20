@@ -44,7 +44,7 @@ router.post('/logged/updateFavoritePOI', function(req, res, next){
             res.status(200).send();
         })
         .catch(function(err){
-            res.send(err);
+            res.status(404).send('on delete data not found');
         });
     }
 });
@@ -70,7 +70,7 @@ router.post('/logged/updateFavoritePOI', function(req, res, next){
         }
     })
     .catch(function(err){
-        res.send(err);
+        res.status(404).send('on all poi data not found');
     });
 });
 
@@ -95,7 +95,7 @@ router.post('/logged/updateFavoritePOI', function(req, res){
             res.status(200).send();
         })
         .catch(function(err){
-            res.send(err);
+            res.status(404).send('one delete or update no data found');
         });
     }
 });
