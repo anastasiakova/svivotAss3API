@@ -78,17 +78,6 @@ router.post('/logged/updateFavoritePOI', function(req, res, next){
 router.post('/logged/updateFavoritePOI', function(req, res){
     const favorites = req.body.favorites;
     const username = req.decoded.username;
-    var isValid = true; 
-    const dates = favorites.map((favorite) => favorite.date);
-    const userKeyRegExp = /^[1-2][0-9]{3}-[0-1][0-9]-[0-3][0-9]T[0-1][0-9][:][0-5][0-9][:][0-5][0-9]Z$/
-    for (const date in dates) {
-        if (!userKeyRegExp.test(dates[date])) {
-            isValid = false;
-            res.status(400).send('the date format is yyyy-mm-ddTHH:MM:SSZ');
-            break;
-        }
-    }
-    if(isValid){
         DButilsAzure.execQuery(queries.deleteFavorites(username))
         .then(() => DButilsAzure.execQuery(queries.updateFavoritePOI(username, favorites)))
         .then(function(){
@@ -97,7 +86,7 @@ router.post('/logged/updateFavoritePOI', function(req, res){
         .catch(function(err){
             res.status(404).send('one delete or update no data found');
         });
-    }
+    
 });
 
 module.exports = router;
